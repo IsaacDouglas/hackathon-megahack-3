@@ -4,10 +4,22 @@ import PerfectHTTP
 import PerfectHTTPServer
 import ControllerSwift
 import PerfectCRUD
+import PerfectSession
 
 // MARK: - Init Server
 let server = HTTPServer()
-server.serverPort = 80
+server.serverPort = 8181
+
+SessionConfig.CORS.enabled = true
+SessionConfig.CORS.maxAge = 86400
+SessionConfig.CORS.acceptableHostnames = ["*"]
+SessionConfig.CORS.methods = [.get, .post, .put, .delete, .options]
+SessionConfig.CORS.withCredentials = true
+SessionConfig.CORS.customHeaders = ["*", "Content-Range", "Timezone-Offset-Header", "Authorization"]
+
+let sessionDriver = SessionMemoryDriver()
+server.setRequestFilters([sessionDriver.requestFilter])
+server.setResponseFilters([sessionDriver.responseFilter])
 
 // MARK: - Routes
 var routes = Routes()
@@ -20,10 +32,15 @@ routes.add(method: .get, uri: "/reset", handler: { request, response in
         let database = try DatabaseSettings.getDB(reset: true)
         try User.createTable(database: database)
         try UserAuthenticate.createTable(database: database)
+        try Goal.createTable(database: database)
     } catch {
         Log("\(error)")
         response.completed(status: .internalServerError)
     }
+    response.completed()
+})
+
+routes.add(method: .options, uri: "/authenticate", handler: { request, response in
     response.completed()
 })
 
@@ -81,6 +98,7 @@ routes.add(method: .post, uri: "/authenticate", handler: { request, response in
 do {
     let database = try DatabaseSettings.getDB(reset: false)
     routes.add(User.routes(database: database, useAuthenticationWith: Payload.self))
+    routes.add(Goal.routes(database: database, useAuthenticationWith: Payload.self))
 } catch {
     Log("\(error)")
 }
