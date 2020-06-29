@@ -27,12 +27,16 @@ routes.add(method: .get, uri: "/", handler: { request, response in
     response.setBody(string: "Hello world!").completed()
 })
 
+func reset() throws {
+    let database = try DatabaseSettings.getDB(reset: true)
+    try User.createTable(database: database)
+    try UserAuthenticate.createTable(database: database)
+    try Goal.createTable(database: database)
+}
+
 routes.add(method: .get, uri: "/reset", handler: { request, response in
     do {
-        let database = try DatabaseSettings.getDB(reset: true)
-        try User.createTable(database: database)
-        try UserAuthenticate.createTable(database: database)
-        try Goal.createTable(database: database)
+        try reset()
     } catch {
         Log("\(error)")
         response.completed(status: .internalServerError)
@@ -104,6 +108,14 @@ do {
 }
 
 server.addRoutes(routes)
+
+#if os(Linux)
+do {
+    try reset()
+} catch {
+    Log("\(error)")
+}
+#endif
 
 // MARK: - Start server
 do {
