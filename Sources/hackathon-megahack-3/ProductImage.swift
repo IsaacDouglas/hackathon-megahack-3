@@ -1,41 +1,45 @@
 //
-//  User.swift
+//  ProductImage.swift
 //  hackathon-megahack-3
 //
-//  Created by Isaac Douglas on 29/06/20.
+//  Created by Isaac Douglas on 30/06/20.
 //
 
 import Foundation
 import ControllerSwift
 import PerfectCRUD
 
-struct User: Codable {
+struct ProductImage: Codable {
     var id: Int
+    var product_id: Int
     var name: String
-    var email: String
-    var password: String
-    var admin: Bool
+    var size: Double
+    var url: String
+    var created_at: Date
     
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         self.id = (try? values.decode(Int.self, forKey: .id)) ?? 0
+        self.product_id = try values.decode(Int.self, forKey: .product_id)
         self.name = try values.decode(String.self, forKey: .name)
-        self.email = try values.decode(String.self, forKey: .email)
-        self.password = try values.decode(String.self, forKey: .password)
-        self.admin = try values.decode(Bool.self, forKey: .admin)
+        self.size = try values.decode(Double.self, forKey: .size)
+        self.url = try values.decode(String.self, forKey: .url)
+        self.created_at = try values.decode(Date.self, forKey: .created_at)
     }
 }
 
-extension User: ControllerSwiftProtocol {
+extension ProductImage: ControllerSwiftProtocol {
     static func createTable<T: DatabaseConfigurationProtocol>(database: Database<T>) throws {
         try database.sql("DROP TABLE IF EXISTS \(Self.CRUDTableName)")
         try database.sql("""
             CREATE TABLE \(Self.CRUDTableName) (
             id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+            product_id INTEGER NOT NULL,
             name TEXT NOT NULL,
-            email TEXT NOT NULL UNIQUE,
-            password CHAR(64) NOT NULL,
-            admin BOOLEAN NOT NULL CHECK (admin IN (0,1))
+            size REAL NOT NULL,
+            url TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            FOREIGN KEY (product_id) REFERENCES \(Product.CRUDTableName) (id) ON DELETE CASCADE
             )
             """)
     }

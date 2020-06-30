@@ -32,6 +32,10 @@ func reset() throws {
     try User.createTable(database: database)
     try UserAuthenticate.createTable(database: database)
     try Goal.createTable(database: database)
+    try Address.createTable(database: database)
+    try Category.createTable(database: database)
+    try Product.createTable(database: database)
+    try ProductImage.createTable(database: database)
 }
 
 routes.add(method: .get, uri: "/reset", handler: { request, response in
@@ -56,7 +60,7 @@ routes.add(method: .post, uri: "/authenticate", handler: { request, response in
     
     if authenticate.username == "admin" && authenticate.password == "admin" {
         let timeInterval = Date.timeInterval
-        let exp = timeInterval + TimeIntervalType.minutes(10).totalSeconds
+        let exp = timeInterval + TimeIntervalType.hour(999).totalSeconds
         let payload = Payload(sub: 0, exp: exp, iat: timeInterval)
         
         do {
@@ -84,7 +88,7 @@ routes.add(method: .post, uri: "/authenticate", handler: { request, response in
         }
         
         let timeInterval = Date.timeInterval
-        let exp = timeInterval + TimeIntervalType.minutes(10).totalSeconds
+        let exp = timeInterval + TimeIntervalType.hour(999).totalSeconds
         let payload = Payload(sub: userAuth.idUser, exp: exp, iat: timeInterval)
         let token = try Token(payload: payload)
         
@@ -101,8 +105,12 @@ routes.add(method: .post, uri: "/authenticate", handler: { request, response in
 // MARK: - ControllerSwift
 do {
     let database = try DatabaseSettings.getDB(reset: false)
-    routes.add(User.routes(database: database, useAuthenticationWith: Payload.self))
-    routes.add(Goal.routes(database: database, useAuthenticationWith: Payload.self))
+    routes.add(User.routes(database: database))
+    routes.add(Goal.routes(database: database))
+    routes.add(Address.routes(database: database))
+    routes.add(Category.routes(database: database))
+    routes.add(Product.routes(database: database))
+    routes.add(ProductImage.routes(database: database))
 } catch {
     Log("\(error)")
 }
