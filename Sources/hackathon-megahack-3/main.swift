@@ -36,6 +36,11 @@ func reset() throws {
     try Category.createTable(database: database)
     try Product.createTable(database: database)
     try ProductImage.createTable(database: database)
+    try Advertisement.createTable(database: database)
+    try QRCode.createTable(database: database)
+    try Restaurant.createTable(database: database)
+    try Recipe.createTable(database: database)
+    try Event.createTable(database: database)
 }
 
 routes.add(method: .get, uri: "/reset", handler: { request, response in
@@ -80,7 +85,7 @@ routes.add(method: .post, uri: "/authenticate", handler: { request, response in
     do {
         let database = try DatabaseSettings.getDB(reset: false)
         guard
-            let userAuth = try UserAuthenticate.select(database: database, username: authenticate.username),
+            let userAuth = try User.select(database: database, email: authenticate.username),
             userAuth.password == authenticate.password.sha256
             else {
                 response.completed(status: .unauthorized)
@@ -89,7 +94,7 @@ routes.add(method: .post, uri: "/authenticate", handler: { request, response in
         
         let timeInterval = Date.timeInterval
         let exp = timeInterval + TimeIntervalType.hour(999).totalSeconds
-        let payload = Payload(sub: userAuth.idUser, exp: exp, iat: timeInterval)
+        let payload = Payload(sub: userAuth.id, exp: exp, iat: timeInterval)
         let token = try Token(payload: payload)
         
         try response
@@ -111,19 +116,16 @@ do {
     routes.add(Category.routes(database: database))
     routes.add(Product.routes(database: database))
     routes.add(ProductImage.routes(database: database))
+    routes.add(Advertisement.routes(database: database))
+    routes.add(QRCode.routes(database: database))
+    routes.add(Restaurant.routes(database: database))
+    routes.add(Recipe.routes(database: database))
+    routes.add(Event.routes(database: database))
 } catch {
     Log("\(error)")
 }
 
 server.addRoutes(routes)
-
-#if os(Linux)
-do {
-    try reset()
-} catch {
-    Log("\(error)")
-}
-#endif
 
 // MARK: - Start server
 do {

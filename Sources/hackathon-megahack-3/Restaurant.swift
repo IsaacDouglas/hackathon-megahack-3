@@ -1,45 +1,44 @@
 //
-//  Goal.swift
+//  Restaurant.swift
 //  hackathon-megahack-3
 //
-//  Created by Isaac Douglas on 29/06/20.
+//  Created by Isaac Douglas on 01/07/20.
 //
 
 import Foundation
 import ControllerSwift
 import PerfectCRUD
 
-struct Goal: Codable {
+struct Restaurant: Codable {
     var id: Int
-    var title: String
+    var name: String
     var description: String
-    var minimumPoints: Int
-    
-    enum CodingKeys: String, CodingKey {
-        case id
-        case title
-        case description
-        case minimumPoints = "minimum_points"
-    }
+    var image: String?
+    var latitude: Float?
+    var longitude: Float?
     
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         self.id = (try? values.decode(Int.self, forKey: .id)) ?? 0
-        self.title = try values.decode(String.self, forKey: .title)
+        self.name = try values.decode(String.self, forKey: .name)
         self.description = try values.decode(String.self, forKey: .description)
-        self.minimumPoints = try values.decode(Int.self, forKey: .minimumPoints)
+        self.image = try? values.decode(String.self, forKey: .image)
+        self.latitude = try? values.decode(Float.self, forKey: .latitude)
+        self.longitude = try? values.decode(Float.self, forKey: .longitude)
     }
 }
 
-extension Goal: ControllerSwiftProtocol {
+extension Restaurant: ControllerSwiftProtocol {
     static func createTable<T: DatabaseConfigurationProtocol>(database: Database<T>) throws {
         try database.sql("DROP TABLE IF EXISTS \(Self.CRUDTableName)")
         try database.sql("""
             CREATE TABLE \(Self.CRUDTableName) (
             id INTEGER AUTO_INCREMENT PRIMARY KEY UNIQUE,
-            title TEXT NOT NULL,
+            name TEXT NOT NULL,
             description TEXT NOT NULL,
-            minimum_points INTEGER NOT NULL
+            image TEXT,
+            latitude FLOAT,
+            longitude FLOAT
             )
             """)
     }

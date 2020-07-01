@@ -14,7 +14,7 @@ struct Payload: PayloadProtocol {
     public var iat: CLong
     
     func reload() -> Payload {
-        let exp = self.exp + TimeIntervalType.minutes(10).totalSeconds
+        let exp = self.exp + TimeIntervalType.hour(999).totalSeconds
         return .init(sub: self.sub, exp: exp, iat: self.iat)
     }
 }

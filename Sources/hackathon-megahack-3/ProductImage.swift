@@ -15,7 +15,7 @@ struct ProductImage: Codable {
     var name: String
     var size: Double
     var url: String
-    var created_at: Date
+    var created_at: CLong?
     
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
@@ -24,7 +24,7 @@ struct ProductImage: Codable {
         self.name = try values.decode(String.self, forKey: .name)
         self.size = try values.decode(Double.self, forKey: .size)
         self.url = try values.decode(String.self, forKey: .url)
-        self.created_at = try values.decode(Date.self, forKey: .created_at)
+        self.created_at = try? values.decode(CLong.self, forKey: .created_at)
     }
 }
 
@@ -33,12 +33,12 @@ extension ProductImage: ControllerSwiftProtocol {
         try database.sql("DROP TABLE IF EXISTS \(Self.CRUDTableName)")
         try database.sql("""
             CREATE TABLE \(Self.CRUDTableName) (
-            id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+            id INTEGER AUTO_INCREMENT PRIMARY KEY UNIQUE,
             product_id INTEGER NOT NULL,
             name TEXT NOT NULL,
             size REAL NOT NULL,
             url TEXT NOT NULL,
-            created_at TEXT NOT NULL,
+            created_at BIGINT NOT NULL,
             FOREIGN KEY (product_id) REFERENCES \(Product.CRUDTableName) (id) ON DELETE CASCADE
             )
             """)

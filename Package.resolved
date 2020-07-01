@@ -21,11 +21,11 @@
       },
       {
         "package": "PerfectCRUD",
-        "repositoryURL": "https://github.com/PerfectlySoft/Perfect-CRUD.git",
+        "repositoryURL": "https://github.com/IsaacDouglas/Perfect-CRUD.git",
         "state": {
           "branch": null,
-          "revision": "71c445eaaa94e5ce634aa11a6a1aa6544e786307",
-          "version": "2.0.0"
+          "revision": "abc951e47d9c337230e8d4d436a1e89ff5f06863",
+          "version": "2.0.1"
         }
       },
       {
@@ -92,6 +92,24 @@
         }
       },
       {
+        "package": "PerfectMySQL",
+        "repositoryURL": "https://github.com/IsaacDouglas/Perfect-MySQL.git",
+        "state": {
+          "branch": null,
+          "revision": "a9df2933e7a82a31a635e69efe043042fcf17141",
+          "version": "3.5.3"
+        }
+      },
+      {
+        "package": "mysqlclient",
+        "repositoryURL": "https://github.com/PerfectlySoft/Perfect-mysqlclient.git",
+        "state": {
+          "branch": null,
+          "revision": "ed4f0e775c874b535fb24b00e6600b81f2932907",
+          "version": "2.1.1"
+        }
+      },
+      {
         "package": "PerfectNet",
         "repositoryURL": "https://github.com/PerfectlySoft/Perfect-Net.git",
         "state": {
@@ -107,15 +125,6 @@
           "branch": null,
           "revision": "5cd6ccd4684a0c31a0fd3a91b7680dc093f33657",
           "version": "3.1.5"
-        }
-      },
-      {
-        "package": "PerfectSQLite",
-        "repositoryURL": "https://github.com/PerfectlySoft/Perfect-SQLite.git",
-        "state": {
-          "branch": null,
-          "revision": "43c0e16cfce1dada7914d8334e43ffa887e66f8e",
-          "version": "5.0.0"
         }
       },
       {

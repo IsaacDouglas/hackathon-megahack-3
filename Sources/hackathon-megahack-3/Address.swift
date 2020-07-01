@@ -35,7 +35,7 @@ extension Address: ControllerSwiftProtocol {
         try database.sql("DROP TABLE IF EXISTS \(Self.CRUDTableName)")
         try database.sql("""
             CREATE TABLE \(Self.CRUDTableName) (
-            id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+            id INTEGER AUTO_INCREMENT PRIMARY KEY UNIQUE,
             user_id INTEGER NOT NULL,
             CEP TEXT NOT NULL,
             street TEXT NOT NULL,

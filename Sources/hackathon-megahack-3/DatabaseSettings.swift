@@ -7,21 +7,32 @@
 
 import Foundation
 import PerfectCRUD
-import PerfectSQLite
+import PerfectMySQL
 
-typealias DBConfiguration = SQLiteDatabaseConfiguration
+#if os(Linux)
+let host = "docker.for.internal"
+#else
+let host = "localhost"
+#endif
+
+let DBName = "megahack3"
+let user = "root"
+let password = "1234"
+typealias DBConfiguration = MySQLDatabaseConfiguration
 
 class DatabaseSettings {
     static func getDB(reset: Bool) throws -> Database<DBConfiguration> {
-        let dbPath = FileManager
-            .default
-            .urls(for: .documentDirectory, in: .userDomainMask)
-            .first!
-            .appendingPathComponent("db/database/megahack3.db")
-        
         if reset {
-            unlink(dbPath.absoluteString)
+            let db = Database(configuration: try DBConfiguration(database: DBName,
+                                                                 host: host,
+                                                                 username: user,
+                                                                 password: password))
+            try db.sql("DROP DATABASE \(DBName)")
+            try db.sql("CREATE DATABASE \(DBName) DEFAULT CHARACTER SET utf8mb4")
         }
-        return Database(configuration: try DBConfiguration(dbPath.path))
+        return Database(configuration: try DBConfiguration(database: DBName,
+                                                           host: host,
+                                                           username: user,
+                                                           password: password))
     }
 }

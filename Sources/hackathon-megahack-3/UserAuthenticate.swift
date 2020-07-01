@@ -36,8 +36,8 @@ extension UserAuthenticate: ControllerSwiftProtocol {
         try database.sql("DROP TABLE IF EXISTS \(Self.CRUDTableName)")
         try database.sql("""
             CREATE TABLE \(Self.CRUDTableName) (
-            id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
-            username TEXT NOT NULL UNIQUE,
+            id INTEGER AUTO_INCREMENT PRIMARY KEY UNIQUE,
+            username VARCHAR(128) NOT NULL UNIQUE,
             password CHAR(64) NOT NULL,
             id_user INTEGER NOT NULL UNIQUE
             )
